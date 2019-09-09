@@ -1,0 +1,131 @@
+﻿@inject SignInManager<ApplicationUser> signInManager;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <environment include="Development">
+        <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
+              asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+              asp-suppress-fallback-integrity="true" />
+
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+    </environment>
+
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet"/>
+    <title>@ViewBag.Title</title>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <a class="navbar-brand" 
+               asp-controller="Home" 
+               asp-action="Index">
+                <img src="~/images/noimage.PNG" height="40" width="40"/>
+            </a>
+
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#CollapsableNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="CollapsableNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="Home"
+                           asp-action="Index">List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="Home"
+                           asp-action="Create">Create</a>
+                    </li>
+                    
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               href="#" 
+                               id="navbarDdownMenu"
+                               data-toggle="dropdown"
+                               aria-haspopup="true"
+                               aria-expanded="false">
+                            Manage</a>
+                        <div class="dropdown-menu" 
+                             aria-labelledby="navbarDdownMenu">
+
+                            <a class="dropdown-item"
+                               asp-controller="Administration"
+                               asp-action="UsersList">
+                                Users
+                            </a>
+                            <a class="dropdown-item"
+                               asp-controller="Administration"
+                               asp-action="RolesList">
+                                Roles
+                            </a>
+                        </div>
+                        </li>
+                    }
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+                    @if (signInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <form method="post"
+                                  asp-controller="Account"
+                                  asp-action="logout">
+                                <button type="submit"
+                                        class="nav-link btn btn-link py-0"
+                                        style="width:auto;">
+                                    Logout @User.Identity.Name
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Account"
+                               asp-action="Register">Sign Up</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Account"
+                               asp-action="Login">Sign in</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+        <div>
+            @RenderBody()
+        </div>
+        @{
+            if (IsSectionDefined("Scripts"))
+            {
+                RenderSection("Scripts",required: true);
+                //RenderSection 2.parametresi ya da üstteki if yapısı kullanılmadan
+                //sadece RenderSection metodu çağırılırsa
+                //Belirtilen Section bu layout dosyasını kullanan
+                //tüm dosyalarda tanımlı olmalıdır.
+            }
+        }
+    </div>
+</body>
+</html>
